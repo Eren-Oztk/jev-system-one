@@ -144,6 +144,24 @@ hermes mcp add system-one --command "D:/system-one/.venv/Scripts/python.exe" --a
 Araçlar: `system_one`, `jev_packs`, `jev_doctor` → Hermes'te restart sonrası
 `mcp_system_one_system_one` olarak görünür.
 
+## Hermes shell-hook guardrail (otomatik denetim)
+
+`jev hook` Hermes'in `pre_tool_call` kancası olarak çalışır: stdin'den tool payload'ını
+alır, **önce ucuz regex ön filtreden** geçirir (yıkıcılık/sır/exfil desenleri). Eşleşme
+yoksa hiç model çağırmadan 0 ms'de geçer; şüpheliyse 3 atomik soru sorar
+(`destructive`, `secret_exposure`, `exfiltration`) ve eşik üstüyse `exit 2` +
+`{"decision":"block","reason":...}` döner.
+
+```bash
+hermes config set hooks.pre_tool_call \
+  '[{"matcher":"terminal|write_file|patch|browser_exec","command":"D:/system-one/.venv/Scripts/jev.exe hook","timeout":30}]'
+hermes hooks doctor                 # onay + script durumu
+hermes hooks test pre_tool_call     # sentetik payload
+```
+
+İlk kullanımda tek seferlik onay gerekir (TTY prompt'u ya da `hermes --accept-hooks`).
+Kapatmak için: `hermes config unset hooks.pre_tool_call`.
+
 ## Testler
 
 ```bash

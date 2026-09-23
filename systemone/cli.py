@@ -217,6 +217,13 @@ def cmd_mcp(args: argparse.Namespace) -> int:
     return mcp_main()
 
 
+def cmd_hook(args: argparse.Namespace) -> int:
+    """Hermes shell-hook köprüsü: stdin'den payload, stdout'a karar."""
+    from .hook import main as hook_main
+
+    return hook_main()
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="jev", description="System One / Jev karar CLI'ı")
     p.add_argument("--version", action="version", version=f"systemone {__version__}")
@@ -249,6 +256,9 @@ def build_parser() -> argparse.ArgumentParser:
     m.set_defaults(func=cmd_models)
 
     sub.add_parser("mcp", help="MCP stdio sunucusunu çalıştır").set_defaults(func=cmd_mcp)
+    sub.add_parser(
+        "hook", help="Hermes shell-hook köprüsü (pre_tool_call guardrail, stdin→stdout)"
+    ).set_defaults(func=cmd_hook)
     return p
 
 
