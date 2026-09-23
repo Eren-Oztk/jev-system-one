@@ -5,3 +5,6 @@ __pycache__/
 _*.py
 .pytest_cache/
 artifacts/
+
+%SystemDrive%/
+.pytest_cache/
