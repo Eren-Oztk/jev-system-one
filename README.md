@@ -162,12 +162,31 @@ hermes hooks test pre_tool_call     # sentetik payload
 İlk kullanımda tek seferlik onay gerekir (TTY prompt'u ya da `hermes --accept-hooks`).
 Kapatmak için: `hermes config unset hooks.pre_tool_call`.
 
-## Testler
+## Testler (4 katman)
 
 ```bash
-.venv/Scripts/python.exe -m pytest tests -q      # ağsız birim testler
-.venv/Scripts/python.exe scripts/smoke.py        # gerçek çağrı, artifacts/ altına kaydeder
+.venv/Scripts/python.exe -m pytest tests -q            # 1) birim: 13 test, ağsız
+.venv/Scripts/python.exe scripts/eval.py               # 2) etiketli 12 vaka: doğruluk + kalibrasyon + gecikme
+.venv/Scripts/python.exe scripts/jaggedness_probe.py   # 3) dokümante zayıflıkların canlı doğrulaması
+.venv/Scripts/python.exe scripts/mcp_probe.py          # 4) MCP üzerinden gerçek tool çağrısı
+.venv/Scripts/python.exe scripts/smoke.py              # uçtan uca 3 senaryo
+hermes hooks test pre_tool_call                        # kanca ateşleme
 ```
+
+**Ölçülen sonuçlar (fallback motoru, `deepseek-flash`, 2026-09-23):**
+
+| Test | Sonuç |
+|---|---|
+| Birim | 13/13 |
+| Eval (12 vaka) | department %100, is_urgent %100, wants_human %100 (1 etiket düzeltmesi sonrası) |
+| Kalibrasyon | tüm confidence kovalarında %100 → bu set kolay, ayrım gücü yok (tavan etkisi) |
+| Gecikme | ortalama 3312 ms, p50 2861 ms, min 2124, max 4902 |
+| Zayıflık probları | sayım/aritmetik/tarih fallback'te **tutuyor** — çünkü iddialar `jev-1.13`'e ait, LLM'e değil |
+| Guardrail kancası | zararsız 0.33 s (model çağrısı yok), `rm -rf` ve sır+sızıntı → exit 2 |
+
+**Yorum:** zayıflık probları Jev anahtarı gelince tekrar koşulmalı; asıl kanıt o zaman
+oluşur. Fallback bu mikro görevlerde daha isabetli ama **kalibre değil ve 20–50x yavaş** —
+tam tersi takas. Eşikleri Jev ile kalibre et.
 
 ## Motor: Jev vs fallback
 

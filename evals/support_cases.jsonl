@@ -1,0 +1,12 @@
+{"id":"c01","state":{"channel":"whatsapp","message":"Kartımdan iki kez 49 dolar çekilmiş, iade istiyorum."},"expect":{"department":"billing","is_urgent":false,"wants_human":false}}
+{"id":"c02","state":{"channel":"email","message":"Sitemin ödeme sayfası hata veriyor, müşteriler ödeme yapamıyor, satış durdu."},"expect":{"department":"technical","is_urgent":true,"wants_human":false}}
+{"id":"c03","state":{"channel":"email","message":"Fiyat listenizi ve kurumsal paket teklifinizi alabilir miyim?"},"expect":{"department":"sales","is_urgent":false,"wants_human":false}}
+{"id":"c04","state":{"channel":"whatsapp","message":"Entegrasyon 3 gündür çalışmıyor, acil çözülmesi lazım."},"expect":{"department":"technical","is_urgent":true,"wants_human":false}}
+{"id":"c05","state":{"channel":"email","message":"Faturamda iki kalem görünüyor, muhasebeye nasıl açıklarım?"},"expect":{"department":"billing","is_urgent":false,"wants_human":false}}
+{"id":"c06","state":{"channel":"email","message":"API'miz kart token alırken hata dönüyor, canlı ortamda hiç ödeme alamıyoruz, acil müdahale gerekli."},"expect":{"department":"technical","is_urgent":true,"wants_human":false}}
+{"id":"c07","state":{"channel":"email","message":"Teklifimiz onaylandı, sözleşme ve ödeme planı için ne gerekiyor?"},"expect":{"department":"sales","is_urgent":false,"wants_human":false}}
+{"id":"c08","state":{"channel":"whatsapp","message":"Şifre sıfırlama e-postası gelmiyor."},"expect":{"department":"technical","is_urgent":false,"wants_human":false}}
+{"id":"c09","state":{"channel":"email","message":"Faturayı e-arşiv olarak almam gerekiyor, bunu nasıl talep ederim?"},"expect":{"department":"billing","is_urgent":false,"wants_human":false}}
+{"id":"c10","state":{"channel":"email","message":"Yeni bir entegrasyon yazacağız, kapsam ve fiyat için görüşebilir miyiz?"},"expect":{"department":"sales","is_urgent":false,"wants_human":true},"note":"etiket düzeltmesi: 'görüşebilir miyiz' görüşme talebi sayılır (ilk koşuda false idi, modelin 0.90 cevabı haklıydı)"}
+{"id":"c11","state":{"channel":"whatsapp","message":"Ürün sayfasındaki resimler yüklenmiyor ve sitemiz bu sabah hiç açılmadı, bu bir felaket, acil!"},"expect":{"department":"technical","is_urgent":true,"wants_human":false}}
+{"id":"c12","state":{"channel":"email","message":"Aboneliğimi iptal etmek istiyorum, kalan aylar için iade yapılır mı?"},"expect":{"department":"billing","is_urgent":false,"wants_human":false}}
