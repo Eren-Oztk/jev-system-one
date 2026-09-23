@@ -71,6 +71,15 @@ QUESTIONS: dict[str, dict[str, Any]] = {
 
 BLOCK_AT = {"destructive": 0.85, "secret_exposure": 0.8, "exfiltration": 0.75}
 
+# Sırrı YEREL kasaya yazmak meşrudur (istenen davranış); bloklanacak olan sırrı
+# DIŞARI göndermektir. Bu yollar bir sır içeriyorsa secret_exposure sorusu sorulmaz;
+# exfiltration ayrı soru olarak kalır, yani sızıntı yine yakalanır.
+LOCAL_SECRET_STORE = re.compile(
+    r"(hermes-vault|hermes-vault\.exe|\.env\b|agent-hooks|shell-hooks-allowlist|"
+    r"auth\.json|\.ssh/|known_hosts|certifi|\bstore\b.*secret)",
+    re.IGNORECASE,
+)
+
 
 def _payload_text(payload: dict[str, Any]) -> str:
     tool = payload.get("tool_name") or ""
@@ -87,7 +96,8 @@ def prefilter(text: str) -> list[str]:
     hits: list[str] = []
     if DANGER.search(text):
         hits.append("destructive")
-    if SECRET.search(text):
+    secret_hit = bool(SECRET.search(text))
+    if secret_hit and not LOCAL_SECRET_STORE.search(text):
         hits.append("secret_exposure")
     if EXFIL.search(text) and not LOCAL_OK.search(text):
         hits.append("exfiltration")

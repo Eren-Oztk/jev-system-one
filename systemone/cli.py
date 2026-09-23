@@ -272,6 +272,9 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     except KeyboardInterrupt:
         return 130
+    except Exception as e:  # SDK/auth/ağ hataları: traceback yerine tek satır
+        _err(f"HATA ({type(e).__name__}): {e}")
+        return 2
 
 
 if __name__ == "__main__":
