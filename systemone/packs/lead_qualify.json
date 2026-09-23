@@ -1,0 +1,65 @@
+{
+  "name": "lead_qualify",
+  "description": "Freelance/müşteri talebini tek istekte puanla: kapsam netliği, bütçe sinyali, aciliyet, ciddiyet, iş tipi. Ağırlıklar kodda.",
+  "questions": {
+    "service_type": {
+      "type": "choice",
+      "instructions": "Talep hangi hizmet türüne ait?",
+      "criteria": {
+        "web_dev": "Web sitesi, web uygulaması, e-ticaret",
+        "automation": "Otomasyon, entegrasyon, script, bot, n8n",
+        "ai": "Yapay zeka entegrasyonu, LLM, ajan, model",
+        "security": "Sızma testi, güvenlik denetimi, sertleştirme",
+        "hardware": "Donanım, ağ, sunucu, router, kamera",
+        "other": "Hiçbiri"
+      },
+      "gate": { "act": 0.6, "review": 0.35 }
+    },
+    "scope_clarity": {
+      "type": "score",
+      "instructions": "Talepte işin kapsamı ne kadar net tanımlanmış?",
+      "criteria": [
+        "Belirsiz: tek cümle, ne istendiği çıkarılamıyor",
+        "Kısmi: amaç belli, detaylar eksik",
+        "Net: çıktı, kapsam ve kısıtlar yazılı",
+        "Çok net: kabul kriterleri ve örnekler var"
+      ],
+      "gate": { "act": 0.7, "review": 0.4 }
+    },
+    "budget_signal": {
+      "type": "score",
+      "instructions": "Mesajda bütçeye dair ne kadar güçlü sinyal var?",
+      "criteria": [
+        "Hiç bütçe ifadesi yok",
+        "Ücret soruluyor ama rakam yok",
+        "Bütçe aralığı ya da 'ücret önemli değil' ifadesi var",
+        "Somut rakam ya da onaylanmış bütçe var"
+      ],
+      "gate": { "act": 0.7, "review": 0.4 }
+    },
+    "seriousness": {
+      "type": "noul",
+      "instructions": "Talep ciddi bir satın alma niyeti taşıyor mu (zaman çizelgesi, karar verici, hazır altyapı gibi somut işaretler)?",
+      "criteria": {
+        "true": "Somut işaret var: tarih, mevcut sistem, karar yetkisi, başlamaya hazır",
+        "false": "Sadece fikir sorma, araştırma ya da genel bilgi talebi"
+      },
+      "gate": { "yes": 0.75, "no": 0.25 }
+    },
+    "deadline_pressure": {
+      "type": "noul",
+      "instructions": "İş için belirtilmiş bir teslim tarihi ya da zaman baskısı var mı?",
+      "gate": { "yes": 0.8, "no": 0.2 }
+    },
+    "needs_call": {
+      "type": "noul",
+      "instructions": "İşi netleştirmek için bir görüşme/telefon çağrısı gerekli mi?",
+      "gate": { "yes": 0.7, "no": 0.25 }
+    }
+  },
+  "policy": {
+    "rules": [
+      { "question": "seriousness", "op": "<", "value": 0.25, "then": "review" }
+    ]
+  }
+}

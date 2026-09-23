@@ -1,0 +1,61 @@
+{
+  "name": "support_triage",
+  "description": "Gelen müşteri mesajını yönlendir: departman, aciliyet, duygu durumu, insan talebi, dil.",
+  "questions": {
+    "department": {
+      "type": "choice",
+      "instructions": "Bu mesajı hangi ekip ele almalı?",
+      "criteria": {
+        "billing": "Ödeme, fatura, iade, abonelik",
+        "technical": "Hata, çalışmayan özellik, entegrasyon, kurulum",
+        "sales": "Fiyat, teklif, yeni iş, kapsam sorusu",
+        "none": "Yukarıdakilerden hiçbiri"
+      },
+      "gate": { "act": 0.65, "review": 0.4 }
+    },
+    "is_urgent": {
+      "type": "noul",
+      "instructions": "Mesaj zaman baskısı ya da aciliyet ifade ediyor mu?",
+      "criteria": {
+        "true": "Açıkça zaman kısıtı var: 'bugün', 'acil', 'iş durdu', 'kaçırıyorum'",
+        "false": "Zaman kısıtı yok, normal talep"
+      },
+      "gate": { "yes": 0.8, "no": 0.2 }
+    },
+    "frustration": {
+      "type": "score",
+      "instructions": "Müşterinin ne kadar sinirli göründüğü",
+      "criteria": [
+        "Sakin, sadece durumu anlatıyor",
+        "Rahatsız ama kibar",
+        "Belirgin öfke: suçlama, büyük harf, sert dil"
+      ],
+      "gate": { "act": 0.7, "review": 0.4 }
+    },
+    "wants_human": {
+      "type": "noul",
+      "instructions": "Müşteri açıkça bir insanla görüşmek istiyor mu?",
+      "criteria": {
+        "true": "İnsan/bir kişi/gerçek kişi/temsilci ile konuşmak istiyor",
+        "false": "İnsan talebi yok, cevabı bot da verebilir"
+      },
+      "gate": { "yes": 0.7, "no": 0.15 }
+    },
+    "language": {
+      "type": "choice",
+      "instructions": "Mesajın ana dili hangisi?",
+      "criteria": {
+        "tr": "Türkçe",
+        "en": "İngilizce",
+        "other": "Diğer"
+      },
+      "gate": { "act": 0.6, "review": 0.35 }
+    }
+  },
+  "policy": {
+    "rules": [
+      { "question": "wants_human", "op": ">", "value": 0.7, "then": "escalate" },
+      { "question": "frustration", "op": ">=", "value": 2.0, "then": "review" }
+    ]
+  }
+}

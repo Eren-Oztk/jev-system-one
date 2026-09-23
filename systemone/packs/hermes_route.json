@@ -1,0 +1,56 @@
+{
+  "name": "hermes_route",
+  "description": "Bir Hermes turunu yönlendir: hangi beyin/model, araç gerekli mi, insan onayı gerekli mi, risk seviyesi. Model routing notların için 'akıllı if' katmanı.",
+  "questions": {
+    "intent": {
+      "type": "choice",
+      "instructions": "Kullanıcının bu turdaki asıl amacı ne?",
+      "criteria": {
+        "chat": "Sohbet, soru-cevap, bilgi",
+        "code": "Kod yazma, düzeltme, inceleme, refactor",
+        "research": "Araştırma, kaynak toplama, karşılaştırma",
+        "ops": "Sistem/cihaz işlemi: dosya, servis, kurulum, ağ",
+        "automation": "Tekrarlı işi otomatikleştirme, cron, entegrasyon",
+        "creative": "Tasarım, görsel, metin, içerik üretimi"
+      },
+      "gate": { "act": 0.6, "review": 0.35 }
+    },
+    "needs_tools": {
+      "type": "noul",
+      "instructions": "Bu isteği tamamlamak için dosya/sistem/terminal/ağ erişimi gerekiyor mu?",
+      "gate": { "yes": 0.7, "no": 0.25 }
+    },
+    "needs_deep_reasoning": {
+      "type": "noul",
+      "instructions": "İstek çok adımlı planlama, mimari karar ya da uzun akıl yürütme gerektiriyor mu?",
+      "gate": { "yes": 0.75, "no": 0.3 }
+    },
+    "risk": {
+      "type": "score",
+      "instructions": "İsteğin geri döndürülemez/riskli bir yan etkisi var mı?",
+      "criteria": [
+        "Yok: sadece okuma ya da metin",
+        "Düşük: geri alınabilir yazma (dosya, commit)",
+        "Orta: dış sistem, yayınlama, ödeme, kullanıcı verisi",
+        "Yüksek: silme, format, kimlik bilgisi, güvenlik ayarı, para transferi"
+      ],
+      "gate": { "act": 0.7, "review": 0.4 }
+    },
+    "needs_approval": {
+      "type": "noul",
+      "instructions": "İşleme başlamadan önce kullanıcıdan açık onay alınması gerekiyor mu?",
+      "gate": { "yes": 0.7, "no": 0.25 }
+    },
+    "uncensored_needed": {
+      "type": "noul",
+      "instructions": "İstek, standart modellerin reddedebileceği türde bir içerik mi (güvenlik araştırması, exploit, sansürsüz yazım)?",
+      "gate": { "yes": 0.7, "no": 0.25 }
+    }
+  },
+  "policy": {
+    "rules": [
+      { "question": "risk", "op": ">=", "value": 2.0, "then": "escalate" },
+      { "question": "needs_approval", "op": ">", "value": 0.7, "then": "review" }
+    ]
+  }
+}
